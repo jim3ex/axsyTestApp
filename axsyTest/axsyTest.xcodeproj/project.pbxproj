@@ -19,6 +19,12 @@
 		38B485381C1705E400D8C5DA /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 38B485351C1705E400D8C5DA /* Reachability.m */; };
 		38B485391C1705E400D8C5DA /* ILReachabilityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 38B485371C1705E400D8C5DA /* ILReachabilityManager.m */; };
 		38B4853D1C170B2300D8C5DA /* ImageDataTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 38B4853C1C170B2300D8C5DA /* ImageDataTableViewCell.m */; };
+		38B4854B1C1718C000D8C5DA /* _Album.m in Sources */ = {isa = PBXBuildFile; fileRef = 38B485401C1718C000D8C5DA /* _Album.m */; };
+		38B4854C1C1718C000D8C5DA /* _Picture.m in Sources */ = {isa = PBXBuildFile; fileRef = 38B485421C1718C000D8C5DA /* _Picture.m */; };
+		38B4854D1C1718C000D8C5DA /* _User.m in Sources */ = {isa = PBXBuildFile; fileRef = 38B485441C1718C000D8C5DA /* _User.m */; };
+		38B4854E1C1718C000D8C5DA /* Album.m in Sources */ = {isa = PBXBuildFile; fileRef = 38B485461C1718C000D8C5DA /* Album.m */; };
+		38B4854F1C1718C000D8C5DA /* Picture.m in Sources */ = {isa = PBXBuildFile; fileRef = 38B485481C1718C000D8C5DA /* Picture.m */; };
+		38B485501C1718C000D8C5DA /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = 38B4854A1C1718C000D8C5DA /* User.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +48,18 @@
 		38B485371C1705E400D8C5DA /* ILReachabilityManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ILReachabilityManager.m; sourceTree = "<group>"; };
 		38B4853B1C170B2300D8C5DA /* ImageDataTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDataTableViewCell.h; sourceTree = "<group>"; };
 		38B4853C1C170B2300D8C5DA /* ImageDataTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDataTableViewCell.m; sourceTree = "<group>"; };
+		38B4853F1C1718C000D8C5DA /* _Album.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _Album.h; sourceTree = "<group>"; };
+		38B485401C1718C000D8C5DA /* _Album.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _Album.m; sourceTree = "<group>"; };
+		38B485411C1718C000D8C5DA /* _Picture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _Picture.h; sourceTree = "<group>"; };
+		38B485421C1718C000D8C5DA /* _Picture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _Picture.m; sourceTree = "<group>"; };
+		38B485431C1718C000D8C5DA /* _User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = _User.h; sourceTree = "<group>"; };
+		38B485441C1718C000D8C5DA /* _User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = _User.m; sourceTree = "<group>"; };
+		38B485451C1718C000D8C5DA /* Album.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Album.h; sourceTree = "<group>"; };
+		38B485461C1718C000D8C5DA /* Album.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Album.m; sourceTree = "<group>"; };
+		38B485471C1718C000D8C5DA /* Picture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Picture.h; sourceTree = "<group>"; };
+		38B485481C1718C000D8C5DA /* Picture.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Picture.m; sourceTree = "<group>"; };
+		38B485491C1718C000D8C5DA /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
+		38B4854A1C1718C000D8C5DA /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -74,12 +92,12 @@
 		38B485101C16FCAB00D8C5DA /* axsyTest */ = {
 			isa = PBXGroup;
 			children = (
+				38B4853E1C1718A400D8C5DA /* Model */,
 				38B4853A1C1709E200D8C5DA /* Views */,
 				38B485141C16FCAB00D8C5DA /* AppDelegate.h */,
 				38B485151C16FCAB00D8C5DA /* AppDelegate.m */,
 				38B485231C16FCAB00D8C5DA /* Assets.xcassets */,
 				38B485281C16FCAB00D8C5DA /* Info.plist */,
-				38B485171C16FCAB00D8C5DA /* axsyTest.xcdatamodeld */,
 				38B485111C16FCAB00D8C5DA /* Supporting Files */,
 			);
 			path = axsyTest;
@@ -135,6 +153,26 @@
 				38B4853C1C170B2300D8C5DA /* ImageDataTableViewCell.m */,
 			);
 			name = Views;
+			sourceTree = "<group>";
+		};
+		38B4853E1C1718A400D8C5DA /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				38B4853F1C1718C000D8C5DA /* _Album.h */,
+				38B485401C1718C000D8C5DA /* _Album.m */,
+				38B485411C1718C000D8C5DA /* _Picture.h */,
+				38B485421C1718C000D8C5DA /* _Picture.m */,
+				38B485431C1718C000D8C5DA /* _User.h */,
+				38B485441C1718C000D8C5DA /* _User.m */,
+				38B485451C1718C000D8C5DA /* Album.h */,
+				38B485461C1718C000D8C5DA /* Album.m */,
+				38B485471C1718C000D8C5DA /* Picture.h */,
+				38B485481C1718C000D8C5DA /* Picture.m */,
+				38B485491C1718C000D8C5DA /* User.h */,
+				38B4854A1C1718C000D8C5DA /* User.m */,
+				38B485171C16FCAB00D8C5DA /* axsyTest.xcdatamodeld */,
+			);
+			name = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -208,14 +246,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				38B4854D1C1718C000D8C5DA /* _User.m in Sources */,
 				38B4851F1C16FCAB00D8C5DA /* DetailViewController.m in Sources */,
 				38B4851C1C16FCAB00D8C5DA /* MasterViewController.m in Sources */,
+				38B4854E1C1718C000D8C5DA /* Album.m in Sources */,
 				38B485161C16FCAB00D8C5DA /* AppDelegate.m in Sources */,
 				38B4853D1C170B2300D8C5DA /* ImageDataTableViewCell.m in Sources */,
 				38B485131C16FCAB00D8C5DA /* main.m in Sources */,
 				38B485381C1705E400D8C5DA /* Reachability.m in Sources */,
+				38B485501C1718C000D8C5DA /* User.m in Sources */,
+				38B4854B1C1718C000D8C5DA /* _Album.m in Sources */,
 				38B485191C16FCAB00D8C5DA /* axsyTest.xcdatamodeld in Sources */,
+				38B4854C1C1718C000D8C5DA /* _Picture.m in Sources */,
 				38B485391C1705E400D8C5DA /* ILReachabilityManager.m in Sources */,
+				38B4854F1C1718C000D8C5DA /* Picture.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

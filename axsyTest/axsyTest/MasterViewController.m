@@ -9,6 +9,8 @@
 #import "MasterViewController.h"
 #import "DetailViewController.h"
 #import "Reachability.h"
+#import "AppDelegate.h"
+#import "User.h"
 
 
 @interface MasterViewController ()
@@ -17,18 +19,15 @@
 
 @implementation MasterViewController
 
-BOOL isConnectedToInternet;
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    isConnectedToInternet = FALSE;
     
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-    self.navigationItem.rightBarButtonItem = addButton;
-    self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
+    //UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
+    //self.navigationItem.rightBarButtonItem = addButton;
+    //self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -47,7 +46,7 @@ BOOL isConnectedToInternet;
         [alert addAction:okAction];
         [self presentViewController:alert animated:YES completion:nil];
     } else {
-        [self downloadData];
+        [self downloadDataFromRoute:@"/users"]; //No route - just test raw URL for connectivity
     }
 }
 
@@ -76,9 +75,8 @@ BOOL isConnectedToInternet;
 }
 
 
--(void)downloadData {
-    NSURL *url = [NSURL URLWithString:@"http://jsonplaceholder.typicode.com/photos/1"]; //JWH This will be vriable in a production app
-    
+-(void)downloadDataFromRoute:(NSString *)route {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://jsonplaceholder.typicode.com%@",route]];
     NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
     NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
     
@@ -107,6 +105,12 @@ BOOL isConnectedToInternet;
                                           options:kNilOptions
                                           error:&error];
                     
+                    if([route isEqualToString:@"/users"]) {
+                        NSLog(@"process user JSON");
+                        [self processUser:json];
+                        
+                    }
+                    
                     NSLog(@"%@",json);
                     
                     
@@ -118,6 +122,28 @@ BOOL isConnectedToInternet;
         
         [downloadTask resume];
         
+    }
+}
+
+#pragma mark - JSON Parsers
+
+-(void)processUser:(NSDictionary *)json {
+    if(json) {
+        //See if user exists in Core Data
+        for(NSDictionary *thisUser in json) {
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(id == %@)",[thisUser objectForKey:@"id"]];
+            if([[AppDelegate sharedAppDelegate] countEntity:CDE_USER withPredicate:predicate inManagedObjectContext:_managedObjectContext] == 0) {
+                //New user
+                DLog(@"Storing %@",[thisUser objectForKey:@"id"]);
+                User *newUser = [User insertInManagedObjectContext:_managedObjectContext];
+                newUser.id = [thisUser objectForKey:@"id"];
+                newUser.name = [thisUser objectForKey:@"name"];
+                newUser.username = [thisUser objectForKey:@"name"];
+                newUser.email = [thisUser objectForKey:@"email"];
+                //Not in brief just now so not storing all data STUB
+            }
+        }
+        [[AppDelegate sharedAppDelegate] saveContext];
     }
 }
 
@@ -187,7 +213,7 @@ BOOL isConnectedToInternet;
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Event" inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:CDE_PICTURE inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     
     // Set the batch size to a suitable number.

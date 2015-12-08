@@ -5,6 +5,7 @@
 //  Created by James Holland on 08/12/2015.
 //  Copyright © 2015 The Digital Forge. All rights reserved.
 //
+// mogenerator --template-var arc=true -m axsyTest/axsyTest.xcdatamodeld -M axsyTest -H axsyTest
 
 #import "AppDelegate.h"
 #import "DetailViewController.h"
@@ -15,6 +16,10 @@
 @end
 
 @implementation AppDelegate
+
++ (AppDelegate *)sharedAppDelegate {
+    return (AppDelegate *)[[UIApplication sharedApplication] delegate];
+}
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
@@ -144,5 +149,56 @@
         }
     }
 }
+
+#pragma mark - Utilities
+
+-(NSArray *)getAllEntities:(NSString *)entityToGet withPredicate:(NSPredicate *)thisPredicate inManagedObjectContext:(NSManagedObjectContext *)moc {
+    if(!moc) moc = _managedObjectContext;
+    
+    DLog(@"%@",thisPredicate.description);
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+
+    NSEntityDescription *entity = [NSEntityDescription entityForName:entityToGet inManagedObjectContext:moc];
+    [fetchRequest setEntity:entity];
+    
+    if(thisPredicate) [fetchRequest setPredicate:thisPredicate];
+    
+    //NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:SORT_KEY_POPULARITY ascending:YES];
+    //NSArray *sortDescriptors = @[sortDescriptor];
+    //[fetchRequest setSortDescriptors:sortDescriptors];
+    
+    // Set the batch size to a suitable number.
+    [fetchRequest setFetchBatchSize:100];
+    
+    //[fetchRequest setPropertiesToFetch:[NSArray arrayWithObjects:@"name", nil]];
+    
+    NSError *error;
+    NSArray *results = [moc executeFetchRequest:fetchRequest error:&error];
+    if(!error) {
+        return [NSMutableArray arrayWithArray:results];
+    } else {
+        DLog(@"getAllEntities (%@) in EntityAdd",entityToGet);
+        return nil;
+    }
+}
+
+-(NSInteger)countEntity:(NSString *)entity withPredicate:(NSPredicate *)predicate inManagedObjectContext:(NSManagedObjectContext *)moc {
+    if(!moc) moc = _managedObjectContext;
+    NSFetchRequest *request = [[NSFetchRequest alloc] init];
+    //See if it exists
+    if(!moc) return -1;
+    NSEntityDescription *thisEntity = [NSEntityDescription entityForName:entity inManagedObjectContext:moc];
+    [request setEntity:thisEntity];
+
+    if (predicate) [request setPredicate:predicate];
+    NSError *error = nil;
+    NSUInteger count = [moc countForFetchRequest:request error:&error];
+    if(!error) return count;
+    else {
+        ALog(@"countEntity: ]Unresolved error %@, %@", error, [error userInfo]);
+        return -1;
+    }
+}
+
 
 @end
