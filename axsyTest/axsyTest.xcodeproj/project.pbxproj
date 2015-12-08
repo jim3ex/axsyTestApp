@@ -18,6 +18,7 @@
 		38B485311C16FDA400D8C5DA /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 38B485301C16FDA400D8C5DA /* logo.png */; };
 		38B485381C1705E400D8C5DA /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 38B485351C1705E400D8C5DA /* Reachability.m */; };
 		38B485391C1705E400D8C5DA /* ILReachabilityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 38B485371C1705E400D8C5DA /* ILReachabilityManager.m */; };
+		38B4853D1C170B2300D8C5DA /* ImageDataTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 38B4853C1C170B2300D8C5DA /* ImageDataTableViewCell.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +40,8 @@
 		38B485351C1705E400D8C5DA /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		38B485361C1705E400D8C5DA /* ILReachabilityManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ILReachabilityManager.h; sourceTree = "<group>"; };
 		38B485371C1705E400D8C5DA /* ILReachabilityManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ILReachabilityManager.m; sourceTree = "<group>"; };
+		38B4853B1C170B2300D8C5DA /* ImageDataTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ImageDataTableViewCell.h; sourceTree = "<group>"; };
+		38B4853C1C170B2300D8C5DA /* ImageDataTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ImageDataTableViewCell.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -71,15 +74,10 @@
 		38B485101C16FCAB00D8C5DA /* axsyTest */ = {
 			isa = PBXGroup;
 			children = (
+				38B4853A1C1709E200D8C5DA /* Views */,
 				38B485141C16FCAB00D8C5DA /* AppDelegate.h */,
 				38B485151C16FCAB00D8C5DA /* AppDelegate.m */,
-				38B4851A1C16FCAB00D8C5DA /* MasterViewController.h */,
-				38B4851B1C16FCAB00D8C5DA /* MasterViewController.m */,
-				38B4851D1C16FCAB00D8C5DA /* DetailViewController.h */,
-				38B4851E1C16FCAB00D8C5DA /* DetailViewController.m */,
-				38B485201C16FCAB00D8C5DA /* Main.storyboard */,
 				38B485231C16FCAB00D8C5DA /* Assets.xcassets */,
-				38B485251C16FCAB00D8C5DA /* LaunchScreen.storyboard */,
 				38B485281C16FCAB00D8C5DA /* Info.plist */,
 				38B485171C16FCAB00D8C5DA /* axsyTest.xcdatamodeld */,
 				38B485111C16FCAB00D8C5DA /* Supporting Files */,
@@ -122,6 +120,21 @@
 				38B485371C1705E400D8C5DA /* ILReachabilityManager.m */,
 			);
 			name = Network;
+			sourceTree = "<group>";
+		};
+		38B4853A1C1709E200D8C5DA /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				38B485201C16FCAB00D8C5DA /* Main.storyboard */,
+				38B485251C16FCAB00D8C5DA /* LaunchScreen.storyboard */,
+				38B4851A1C16FCAB00D8C5DA /* MasterViewController.h */,
+				38B4851B1C16FCAB00D8C5DA /* MasterViewController.m */,
+				38B4851D1C16FCAB00D8C5DA /* DetailViewController.h */,
+				38B4851E1C16FCAB00D8C5DA /* DetailViewController.m */,
+				38B4853B1C170B2300D8C5DA /* ImageDataTableViewCell.h */,
+				38B4853C1C170B2300D8C5DA /* ImageDataTableViewCell.m */,
+			);
+			name = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -198,6 +211,7 @@
 				38B4851F1C16FCAB00D8C5DA /* DetailViewController.m in Sources */,
 				38B4851C1C16FCAB00D8C5DA /* MasterViewController.m in Sources */,
 				38B485161C16FCAB00D8C5DA /* AppDelegate.m in Sources */,
+				38B4853D1C170B2300D8C5DA /* ImageDataTableViewCell.m in Sources */,
 				38B485131C16FCAB00D8C5DA /* main.m in Sources */,
 				38B485381C1705E400D8C5DA /* Reachability.m in Sources */,
 				38B485191C16FCAB00D8C5DA /* axsyTest.xcdatamodeld in Sources */,
