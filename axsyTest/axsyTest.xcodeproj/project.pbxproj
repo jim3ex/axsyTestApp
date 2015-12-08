@@ -15,6 +15,9 @@
 		38B485221C16FCAB00D8C5DA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 38B485201C16FCAB00D8C5DA /* Main.storyboard */; };
 		38B485241C16FCAB00D8C5DA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 38B485231C16FCAB00D8C5DA /* Assets.xcassets */; };
 		38B485271C16FCAB00D8C5DA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 38B485251C16FCAB00D8C5DA /* LaunchScreen.storyboard */; };
+		38B485311C16FDA400D8C5DA /* logo.png in Resources */ = {isa = PBXBuildFile; fileRef = 38B485301C16FDA400D8C5DA /* logo.png */; };
+		38B485381C1705E400D8C5DA /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = 38B485351C1705E400D8C5DA /* Reachability.m */; };
+		38B485391C1705E400D8C5DA /* ILReachabilityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 38B485371C1705E400D8C5DA /* ILReachabilityManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +34,11 @@
 		38B485231C16FCAB00D8C5DA /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		38B485261C16FCAB00D8C5DA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		38B485281C16FCAB00D8C5DA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		38B485301C16FDA400D8C5DA /* logo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = logo.png; sourceTree = "<group>"; };
+		38B485341C1705E400D8C5DA /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
+		38B485351C1705E400D8C5DA /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		38B485361C1705E400D8C5DA /* ILReachabilityManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ILReachabilityManager.h; sourceTree = "<group>"; };
+		38B485371C1705E400D8C5DA /* ILReachabilityManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ILReachabilityManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -82,9 +90,38 @@
 		38B485111C16FCAB00D8C5DA /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				38B485331C1705D600D8C5DA /* Network */,
+				38B4852E1C16FD8F00D8C5DA /* Assets */,
 				38B485121C16FCAB00D8C5DA /* main.m */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		38B4852E1C16FD8F00D8C5DA /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				38B4852F1C16FD9B00D8C5DA /* Images */,
+			);
+			name = Assets;
+			sourceTree = "<group>";
+		};
+		38B4852F1C16FD9B00D8C5DA /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				38B485301C16FDA400D8C5DA /* logo.png */,
+			);
+			name = Images;
+			sourceTree = "<group>";
+		};
+		38B485331C1705D600D8C5DA /* Network */ = {
+			isa = PBXGroup;
+			children = (
+				38B485341C1705E400D8C5DA /* Reachability.h */,
+				38B485351C1705E400D8C5DA /* Reachability.m */,
+				38B485361C1705E400D8C5DA /* ILReachabilityManager.h */,
+				38B485371C1705E400D8C5DA /* ILReachabilityManager.m */,
+			);
+			name = Network;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -144,6 +181,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				38B485311C16FDA400D8C5DA /* logo.png in Resources */,
 				38B485271C16FCAB00D8C5DA /* LaunchScreen.storyboard in Resources */,
 				38B485241C16FCAB00D8C5DA /* Assets.xcassets in Resources */,
 				38B485221C16FCAB00D8C5DA /* Main.storyboard in Resources */,
@@ -161,7 +199,9 @@
 				38B4851C1C16FCAB00D8C5DA /* MasterViewController.m in Sources */,
 				38B485161C16FCAB00D8C5DA /* AppDelegate.m in Sources */,
 				38B485131C16FCAB00D8C5DA /* main.m in Sources */,
+				38B485381C1705E400D8C5DA /* Reachability.m in Sources */,
 				38B485191C16FCAB00D8C5DA /* axsyTest.xcdatamodeld in Sources */,
+				38B485391C1705E400D8C5DA /* ILReachabilityManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

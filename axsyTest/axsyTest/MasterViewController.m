@@ -8,6 +8,8 @@
 
 #import "MasterViewController.h"
 #import "DetailViewController.h"
+#import "Reachability.h"
+
 
 @interface MasterViewController ()
 
@@ -15,9 +17,13 @@
 
 @implementation MasterViewController
 
+BOOL isConnectedToInternet;
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
+    isConnectedToInternet = FALSE;
+    
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
     UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
@@ -28,6 +34,21 @@
 - (void)viewWillAppear:(BOOL)animated {
     self.clearsSelectionOnViewWillAppear = self.splitViewController.isCollapsed;
     [super viewWillAppear:animated];
+    
+    Reachability *reachability = [Reachability reachabilityWithHostname:@"http://jsonplaceholder.typicode.com/"];
+    if(!reachability.isReachable) {
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Network Error", nil) message:NSLocalizedString(@"Sorry, there is no network access.", nil) preferredStyle:UIAlertControllerStyleAlert];
+
+        UIAlertAction *okAction = [UIAlertAction
+                           actionWithTitle:@"OK"
+                           style:UIAlertActionStyleDefault
+                                   handler:nil];
+
+        [alert addAction:okAction];
+        [self presentViewController:alert animated:YES completion:nil];
+    } else {
+        [self downloadData];
+    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -53,6 +74,53 @@
         abort();
     }
 }
+
+
+-(void)downloadData {
+    NSURL *url = [NSURL URLWithString:@"http://jsonplaceholder.typicode.com/photos/1"]; //JWH This will be vriable in a production app
+    
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
+    
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
+    request.HTTPMethod = @"GET";
+    
+    [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    //[request addValue: myEmail forHTTPHeaderField:@"user-email"]; JWH No auth required for this API
+    //[request addValue: mySessionToken forHTTPHeaderField:@"user-token"];
+    
+    
+    NSError *error = nil;
+    
+    
+    if (!error) {
+        
+        NSURLSessionDataTask *downloadTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            if (!error) {
+                NSHTTPURLResponse *httpResp = (NSHTTPURLResponse*) response;
+                if (httpResp.statusCode == 200) {
+                    
+                    
+                    NSDictionary* json = [NSJSONSerialization
+                                          JSONObjectWithData:data
+                                          options:kNilOptions
+                                          error:&error];
+                    
+                    NSLog(@"%@",json);
+                    
+                    
+                }
+            }
+            
+        }];
+        
+        
+        [downloadTask resume];
+        
+    }
+}
+
 
 #pragma mark - Segues
 
