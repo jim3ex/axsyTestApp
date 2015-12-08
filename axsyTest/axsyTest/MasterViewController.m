@@ -129,11 +129,13 @@
     NSEntityDescription *entity = [NSEntityDescription entityForName:CDE_PICTURE inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     
+    //newPredicate = [NSPredicate predicateWithFormat:@"SUBQUERY(metrics, $x, $x.dagscore >= %f AND $x.dagscore <= %f).@count > 0",fromCorrected,toCorrected]
     
     
+    //NSPredicate *test = [NSPredicate predicateWithFormat:@"SUBQUERY(albums, $album, $album.userId == 1)"];
     
-    //NSPredicate *predicate = [NSPredicate predicateWithFormat:@"albumId == 1"]; //This will be variable!! STUB
-    //[fetchRequest setPredicate:predicate];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY albums.userId == 1"]; //This will be variable!! STUB
+    [fetchRequest setPredicate:predicate];
     
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
