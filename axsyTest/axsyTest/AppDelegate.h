@@ -38,7 +38,7 @@
 
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
--(NSArray *)getAllEntities:(NSString *)entityToGet withPredicate:(NSPredicate *)thisPredicate inManagedObjectContext:(NSManagedObjectContext *)moc;
+-(NSArray *)getAllEntities:(NSString *)entityToGet withPredicate:(NSPredicate *)thisPredicate;
 -(NSInteger)countEntity:(NSString *)entity withPredicate:(NSPredicate *)predicate inManagedObjectContext:(NSManagedObjectContext *)moc;
 
 + (AppDelegate *)sharedAppDelegate;

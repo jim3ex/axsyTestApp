@@ -11,6 +11,9 @@
 #import "Reachability.h"
 #import "AppDelegate.h"
 #import "User.h"
+#import "Album.h"
+#import "Picture.h"
+#import "ImageDataTableViewCell.h"
 
 
 @interface MasterViewController ()
@@ -45,8 +48,6 @@
 
         [alert addAction:okAction];
         [self presentViewController:alert animated:YES completion:nil];
-    } else {
-        [self downloadDataFromRoute:@"/users"]; //No route - just test raw URL for connectivity
     }
 }
 
@@ -55,97 +56,7 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)insertNewObject:(id)sender {
-    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
-    NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
-    NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
-        
-    // If appropriate, configure the new managed object.
-    // Normally you should use accessor methods, but using KVC here avoids the need to add a custom class to the template.
-    [newManagedObject setValue:[NSDate date] forKey:@"timeStamp"];
-        
-    // Save the context.
-    NSError *error = nil;
-    if (![context save:&error]) {
-        // Replace this implementation with code to handle the error appropriately.
-        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
-        abort();
-    }
-}
 
-
--(void)downloadDataFromRoute:(NSString *)route {
-    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://jsonplaceholder.typicode.com%@",route]];
-    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
-    NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
-    
-    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
-    request.HTTPMethod = @"GET";
-    
-    [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
-    [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
-    //[request addValue: myEmail forHTTPHeaderField:@"user-email"]; JWH No auth required for this API
-    //[request addValue: mySessionToken forHTTPHeaderField:@"user-token"];
-    
-    
-    NSError *error = nil;
-    
-    
-    if (!error) {
-        
-        NSURLSessionDataTask *downloadTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
-            if (!error) {
-                NSHTTPURLResponse *httpResp = (NSHTTPURLResponse*) response;
-                if (httpResp.statusCode == 200) {
-                    
-                    
-                    NSDictionary* json = [NSJSONSerialization
-                                          JSONObjectWithData:data
-                                          options:kNilOptions
-                                          error:&error];
-                    
-                    if([route isEqualToString:@"/users"]) {
-                        NSLog(@"process user JSON");
-                        [self processUser:json];
-                        
-                    }
-                    
-                    NSLog(@"%@",json);
-                    
-                    
-                }
-            }
-            
-        }];
-        
-        
-        [downloadTask resume];
-        
-    }
-}
-
-#pragma mark - JSON Parsers
-
--(void)processUser:(NSDictionary *)json {
-    if(json) {
-        //See if user exists in Core Data
-        for(NSDictionary *thisUser in json) {
-            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(id == %@)",[thisUser objectForKey:@"id"]];
-            if([[AppDelegate sharedAppDelegate] countEntity:CDE_USER withPredicate:predicate inManagedObjectContext:_managedObjectContext] == 0) {
-                //New user
-                DLog(@"Storing %@",[thisUser objectForKey:@"id"]);
-                User *newUser = [User insertInManagedObjectContext:_managedObjectContext];
-                newUser.id = [thisUser objectForKey:@"id"];
-                newUser.name = [thisUser objectForKey:@"name"];
-                newUser.username = [thisUser objectForKey:@"name"];
-                newUser.email = [thisUser objectForKey:@"email"];
-                //Not in brief just now so not storing all data STUB
-            }
-        }
-        [[AppDelegate sharedAppDelegate] saveContext];
-    }
-}
 
 
 #pragma mark - Segues
@@ -173,7 +84,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+    ImageDataTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"imageCell" forIndexPath:indexPath];
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
 }
@@ -198,9 +109,11 @@
     }
 }
 
-- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
-    NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.textLabel.text = [[object valueForKey:@"timeStamp"] description];
+- (void)configureCell:(ImageDataTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    Picture *picture = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    cell.lblTitle.text = picture.title;
+    cell.lblTimestamp.text = [picture.timeStamp description];
+    DLog(@"AlbumID %@",picture.albumId);
 }
 
 #pragma mark - Fetched results controller
@@ -216,6 +129,12 @@
     NSEntityDescription *entity = [NSEntityDescription entityForName:CDE_PICTURE inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     
+    
+    
+    
+    //NSPredicate *predicate = [NSPredicate predicateWithFormat:@"albumId == 1"]; //This will be variable!! STUB
+    //[fetchRequest setPredicate:predicate];
+    
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
     
@@ -226,7 +145,7 @@
     
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
-    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Master"];
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
     

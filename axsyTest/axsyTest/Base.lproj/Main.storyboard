@@ -92,16 +92,21 @@
                                     <rect key="frame" x="0.0" y="0.0" width="600" height="104"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="g51-7k-BiL">
-                                            <rect key="frame" x="166" y="8" width="426" height="21"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="g51-7k-BiL">
+                                            <rect key="frame" x="166" y="8" width="426" height="49"/>
                                             <animations/>
                                             <constraints>
-                                                <constraint firstAttribute="height" constant="21" id="L0r-FE-x4h"/>
+                                                <constraint firstAttribute="height" constant="49" id="L0r-FE-x4h"/>
                                                 <constraint firstAttribute="width" constant="426" id="Y17-sx-wJm"/>
                                             </constraints>
                                             <fontDescription key="fontDescription" type="system" pointSize="25"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
+                                            <variation key="default">
+                                                <mask key="constraints">
+                                                    <exclude reference="Y17-sx-wJm"/>
+                                                </mask>
+                                            </variation>
                                         </label>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZGF-1h-2xC">
                                             <rect key="frame" x="166" y="55" width="426" height="21"/>
@@ -125,9 +130,10 @@
                                     </subviews>
                                     <animations/>
                                     <constraints>
-                                        <constraint firstItem="ZGF-1h-2xC" firstAttribute="top" secondItem="g51-7k-BiL" secondAttribute="bottom" constant="26" id="DOD-jp-GHa"/>
+                                        <constraint firstItem="ZGF-1h-2xC" firstAttribute="top" secondItem="g51-7k-BiL" secondAttribute="bottom" constant="-2" id="DOD-jp-GHa"/>
                                         <constraint firstItem="g51-7k-BiL" firstAttribute="trailing" secondItem="37f-cq-3Eg" secondAttribute="trailingMargin" id="YTU-gY-skM"/>
                                         <constraint firstItem="ZGF-1h-2xC" firstAttribute="trailing" secondItem="37f-cq-3Eg" secondAttribute="trailingMargin" id="e5t-fv-v7x"/>
+                                        <constraint firstItem="g51-7k-BiL" firstAttribute="leading" secondItem="LdO-1m-gFz" secondAttribute="trailing" constant="73" id="fiE-vI-PPF"/>
                                         <constraint firstItem="LdO-1m-gFz" firstAttribute="leading" secondItem="37f-cq-3Eg" secondAttribute="leadingMargin" id="i56-9y-ZES"/>
                                         <constraint firstItem="g51-7k-BiL" firstAttribute="top" secondItem="37f-cq-3Eg" secondAttribute="topMargin" id="kbe-9s-V0L"/>
                                         <constraint firstItem="LdO-1m-gFz" firstAttribute="top" secondItem="37f-cq-3Eg" secondAttribute="topMargin" constant="-8" id="zkx-7E-YXp"/>

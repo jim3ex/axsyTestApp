@@ -10,12 +10,17 @@
 #import "AppDelegate.h"
 #import "DetailViewController.h"
 #import "MasterViewController.h"
+#import "User.h"
+#import "Album.h"
+#import "Picture.h"
 
 @interface AppDelegate () <UISplitViewControllerDelegate>
 
 @end
 
 @implementation AppDelegate
+
+NSUInteger downloadState =0;
 
 + (AppDelegate *)sharedAppDelegate {
     return (AppDelegate *)[[UIApplication sharedApplication] delegate];
@@ -32,6 +37,11 @@
     UINavigationController *masterNavigationController = splitViewController.viewControllers[0];
     MasterViewController *controller = (MasterViewController *)masterNavigationController.topViewController;
     controller.managedObjectContext = self.managedObjectContext;
+    
+    
+
+    [self downloadDataFromRoute:@"/users"];
+    
     return YES;
 }
 
@@ -58,6 +68,7 @@
     // Saves changes in the application's managed object context before the application terminates.
     [self saveContext];
 }
+
 
 #pragma mark - Split view
 
@@ -152,13 +163,13 @@
 
 #pragma mark - Utilities
 
--(NSArray *)getAllEntities:(NSString *)entityToGet withPredicate:(NSPredicate *)thisPredicate inManagedObjectContext:(NSManagedObjectContext *)moc {
-    if(!moc) moc = _managedObjectContext;
+-(NSArray *)getAllEntities:(NSString *)entityToGet withPredicate:(NSPredicate *)thisPredicate {
+
     
     DLog(@"%@",thisPredicate.description);
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
 
-    NSEntityDescription *entity = [NSEntityDescription entityForName:entityToGet inManagedObjectContext:moc];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:entityToGet inManagedObjectContext:_managedObjectContext];
     [fetchRequest setEntity:entity];
     
     if(thisPredicate) [fetchRequest setPredicate:thisPredicate];
@@ -173,7 +184,7 @@
     //[fetchRequest setPropertiesToFetch:[NSArray arrayWithObjects:@"name", nil]];
     
     NSError *error;
-    NSArray *results = [moc executeFetchRequest:fetchRequest error:&error];
+    NSArray *results = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
     if(!error) {
         return [NSMutableArray arrayWithArray:results];
     } else {
@@ -198,6 +209,184 @@
         ALog(@"countEntity: ]Unresolved error %@, %@", error, [error userInfo]);
         return -1;
     }
+}
+
+#pragma mark - Downloader
+
+-(void)downloadDataFromRoute:(NSString *)route {
+    NSURL *url = [NSURL URLWithString:[NSString stringWithFormat:@"http://jsonplaceholder.typicode.com%@",route]];
+    NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:config];
+    
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:url];
+    request.HTTPMethod = @"GET";
+    
+    [request addValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
+    [request addValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    //[request addValue: myEmail forHTTPHeaderField:@"user-email"]; JWH No auth required for this API
+    //[request addValue: mySessionToken forHTTPHeaderField:@"user-token"];
+    
+    
+    NSError *error = nil;
+    
+    
+    if (!error) {
+        
+        NSURLSessionDataTask *downloadTask = [session dataTaskWithRequest:request completionHandler:^(NSData *data, NSURLResponse *response, NSError *error) {
+            if (!error) {
+                NSHTTPURLResponse *httpResp = (NSHTTPURLResponse*) response;
+                if (httpResp.statusCode == 200) {
+                    
+                    
+                    NSDictionary* json = [NSJSONSerialization
+                                          JSONObjectWithData:data
+                                          options:kNilOptions
+                                          error:&error];
+                    
+                    if([route isEqualToString:@"/users"]) {
+                        NSLog(@"process user JSON");
+                        [self processUser:json];
+                    } else if([route isEqualToString:@"/albums"]) {
+                        NSLog(@"process user JSON");
+                        [self processAlbums:json];
+                    } else if([route isEqualToString:@"/photos"]) {
+                        NSLog(@"process user JSON");
+                        [self processPhotos:json];
+                    }
+                    
+                    NSLog(@"%@",json);
+                    
+                    
+                }
+            }
+            
+        }];
+        
+        
+        [downloadTask resume];
+        
+    }
+}
+
+
+#pragma mark - JSON Parsers
+
+-(void)processUser:(NSDictionary *)json {
+    if(json) {
+        //See if user exists in Core Data
+        for(NSDictionary *thisUser in json) {
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(id == %@)",[thisUser objectForKey:@"id"]];
+            if([self countEntity:CDE_USER withPredicate:predicate inManagedObjectContext:_managedObjectContext] == 0) {
+                //New user
+                DLog(@"Storing User %@",[thisUser objectForKey:@"id"]);
+                User *newUser = [User insertInManagedObjectContext:_managedObjectContext];
+                newUser.id = [thisUser objectForKey:@"id"];
+                newUser.name = [thisUser objectForKey:@"name"];
+                newUser.username = [thisUser objectForKey:@"name"];
+                newUser.email = [thisUser objectForKey:@"email"];
+                //Not in brief just now so not storing all data STUB
+            }
+        }
+        [self saveContext];
+    }
+    [self downloadDataFromRoute:@"/albums"];
+}
+
+-(void)processAlbums:(NSDictionary *)json {
+    if(json) {
+        //See if user exists in Core Data
+        for(NSDictionary *thisAlbum in json) {
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(id == %@)",[thisAlbum objectForKey:@"id"]];
+            if([self countEntity:CDE_ALBUM withPredicate:predicate inManagedObjectContext:_managedObjectContext] == 0) {
+                //New Album
+                DLog(@"Storing Album %@",[thisAlbum objectForKey:@"id"]);
+                Album *newAlbum = [Album insertInManagedObjectContext:_managedObjectContext];
+                newAlbum.id = [thisAlbum objectForKey:@"id"];
+                newAlbum.userId = [thisAlbum objectForKey:@"userId"];
+                newAlbum.title = [thisAlbum objectForKey:@"title"];
+                //Connect Album to User
+                //NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(id == %@)",[thisAlbum objectForKey:@"userId"]];
+                //NSArray  *users = [self getAllEntities:CDE_USER withPredicate:predicate];
+                //DLog(@"users %@",users);
+                //if(users.count == 1) {
+                //    User *thisUser = users[0];
+                //    [thisUser addAlbumsObject:newAlbum];
+                //    [newAlbum setUser:thisUser];
+                //}
+                [self saveContext];
+            }
+        }
+        
+    }
+    [self downloadDataFromRoute:@"/photos"];
+}
+
+
+-(void)processPhotos:(NSDictionary *)json {
+    if(json) {
+        //See if user exists in Core Data
+        for(NSDictionary *thisPictureMeta in json) {
+            NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(id == %@)",[thisPictureMeta objectForKey:@"id"]];
+            if([self countEntity:CDE_PICTURE withPredicate:predicate inManagedObjectContext:_managedObjectContext] == 0) {
+                //New user
+                DLog(@"Storing Picture Meta Data %@",[thisPictureMeta objectForKey:@"id"]);
+                Picture *newPicture = [Picture insertInManagedObjectContext:_managedObjectContext];
+                newPicture.id = [thisPictureMeta objectForKey:@"id"];
+                newPicture.albumId = [thisPictureMeta objectForKey:@"albumId"];
+                newPicture.title = [thisPictureMeta objectForKey:@"title"];
+                newPicture.url = [thisPictureMeta objectForKey:@"url"];
+                newPicture.thumbnailURL = [thisPictureMeta objectForKey:@"thumbnailUrl"];
+                
+                //Connect Photo to Album
+                
+                //NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(id == %@)",[thisPictureMeta objectForKey:@"albumId"]];
+                //NSArray  *albums = [[AppDelegate sharedAppDelegate] getAllEntities:CDE_ALBUM withPredicate:predicate ];
+                //if(albums.count == 1) {
+                //    Album *thisAlbum = albums[0];
+                //    [thisAlbum addPicturesObject:newPicture];
+                //    [newPicture addAlbumsObject:thisAlbum];
+                //}
+                 
+                [self saveContext];
+            }
+        }
+        
+    }
+    
+    [self buildConnections];
+}
+
+-(void)buildConnections {
+    
+    NSArray *allUsers = [self getAllEntities:CDE_USER withPredicate:nil];
+    NSArray *allPictures = [self getAllEntities:CDE_PICTURE withPredicate:nil];
+    NSArray *allAlbums = [self getAllEntities:CDE_ALBUM withPredicate:nil];
+    
+    for(User *thisUser in allUsers) {
+        for(Album *thisAlbum in allAlbums) {
+            if([thisAlbum.userId integerValue] == [thisUser.id integerValue]) {
+                [thisUser addAlbumsObject:thisAlbum];
+                [thisAlbum setUser:thisUser];
+            }
+        }
+        [self saveContext];
+    }
+    DLog(@"Albums linked to users");
+    
+    for(Picture *thisPicture in allPictures) {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.id == %@",thisPicture.albumId];
+        NSMutableArray *searchResults = [NSMutableArray arrayWithArray:[allAlbums filteredArrayUsingPredicate:predicate]];
+        if(searchResults.count == 1) {
+            Album *thisAlbum = searchResults[0];
+            [thisAlbum addPicturesObject:thisPicture];
+            [thisPicture addAlbumsObject:thisAlbum];
+        }
+        
+    }
+    DLog(@"Pictures linked to albums");
+    [self saveContext];
+    
+    
 }
 
 
