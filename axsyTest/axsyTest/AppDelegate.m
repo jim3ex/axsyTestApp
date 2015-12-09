@@ -40,7 +40,7 @@ NSUInteger downloadState =0;
     
     
 
-    [self downloadDataFromRoute:@"/users"];
+    [self commenceDownload];
     
     return YES;
 }
@@ -67,6 +67,10 @@ NSUInteger downloadState =0;
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     // Saves changes in the application's managed object context before the application terminates.
     [self saveContext];
+}
+
+-(void)commenceDownload {
+    [self downloadDataFromRoute:@"/users"];
 }
 
 
@@ -304,15 +308,7 @@ NSUInteger downloadState =0;
                 newAlbum.id = [thisAlbum objectForKey:@"id"];
                 newAlbum.userId = [thisAlbum objectForKey:@"userId"];
                 newAlbum.title = [thisAlbum objectForKey:@"title"];
-                //Connect Album to User
-                //NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(id == %@)",[thisAlbum objectForKey:@"userId"]];
-                //NSArray  *users = [self getAllEntities:CDE_USER withPredicate:predicate];
-                //DLog(@"users %@",users);
-                //if(users.count == 1) {
-                //    User *thisUser = users[0];
-                //    [thisUser addAlbumsObject:newAlbum];
-                //    [newAlbum setUser:thisUser];
-                //}
+
                 [self saveContext];
             }
         }
@@ -336,16 +332,7 @@ NSUInteger downloadState =0;
                 newPicture.title = [thisPictureMeta objectForKey:@"title"];
                 newPicture.url = [thisPictureMeta objectForKey:@"url"];
                 newPicture.thumbnailURL = [thisPictureMeta objectForKey:@"thumbnailUrl"];
-                
-                //Connect Photo to Album
-                
-                //NSPredicate *predicate = [NSPredicate predicateWithFormat:@"(id == %@)",[thisPictureMeta objectForKey:@"albumId"]];
-                //NSArray  *albums = [[AppDelegate sharedAppDelegate] getAllEntities:CDE_ALBUM withPredicate:predicate ];
-                //if(albums.count == 1) {
-                //    Album *thisAlbum = albums[0];
-                //    [thisAlbum addPicturesObject:newPicture];
-                //    [newPicture addAlbumsObject:thisAlbum];
-                //}
+                newPicture.timeStamp = [NSDate date];
                  
                 [self saveContext];
             }

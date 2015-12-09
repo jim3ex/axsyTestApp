@@ -1,6 +1,6 @@
 //
 //  MasterViewController.m
-//  axsyTest
+//  TESTDELETE
 //
 //  Created by James Holland on 08/12/2015.
 //  Copyright © 2015 The Digital Forge. All rights reserved.
@@ -8,13 +8,6 @@
 
 #import "MasterViewController.h"
 #import "DetailViewController.h"
-#import "Reachability.h"
-#import "AppDelegate.h"
-#import "User.h"
-#import "Album.h"
-#import "Picture.h"
-#import "ImageDataTableViewCell.h"
-
 
 @interface MasterViewController ()
 
@@ -22,38 +15,19 @@
 
 @implementation MasterViewController
 
-
-
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    
     self.navigationItem.leftBarButtonItem = self.editButtonItem;
 
-    //UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-    //self.navigationItem.rightBarButtonItem = addButton;
-    //self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
-    
-    NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
-    
+    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
+    self.navigationItem.rightBarButtonItem = addButton;
+    self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     self.clearsSelectionOnViewWillAppear = self.splitViewController.isCollapsed;
     [super viewWillAppear:animated];
-    
-    Reachability *reachability = [Reachability reachabilityWithHostname:@"http://jsonplaceholder.typicode.com/"];
-    if(!reachability.isReachable) {
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:NSLocalizedString(@"Network Error", nil) message:NSLocalizedString(@"Sorry, there is no network access.", nil) preferredStyle:UIAlertControllerStyleAlert];
-
-        UIAlertAction *okAction = [UIAlertAction
-                           actionWithTitle:NSLocalizedString(@"OK",nil)
-                           style:UIAlertActionStyleDefault
-                                   handler:nil];
-
-        [alert addAction:okAction];
-        [self presentViewController:alert animated:YES completion:nil];
-    }
 }
 
 - (void)didReceiveMemoryWarning {
@@ -61,8 +35,24 @@
     // Dispose of any resources that can be recreated.
 }
 
-
-
+- (void)insertNewObject:(id)sender {
+    NSManagedObjectContext *context = [self.fetchedResultsController managedObjectContext];
+    NSEntityDescription *entity = [[self.fetchedResultsController fetchRequest] entity];
+    NSManagedObject *newManagedObject = [NSEntityDescription insertNewObjectForEntityForName:[entity name] inManagedObjectContext:context];
+        
+    // If appropriate, configure the new managed object.
+    // Normally you should use accessor methods, but using KVC here avoids the need to add a custom class to the template.
+    [newManagedObject setValue:[NSDate date] forKey:@"timeStamp"];
+        
+    // Save the context.
+    NSError *error = nil;
+    if (![context save:&error]) {
+        // Replace this implementation with code to handle the error appropriately.
+        // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
+        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+        abort();
+    }
+}
 
 #pragma mark - Segues
 
@@ -89,7 +79,7 @@
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    ImageDataTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"imageCell" forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
     [self configureCell:cell atIndexPath:indexPath];
     return cell;
 }
@@ -114,35 +104,9 @@
     }
 }
 
-- (void)configureCell:(ImageDataTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
-    Picture *picture = [self.fetchedResultsController objectAtIndexPath:indexPath];
-    cell.lblTitle.text = picture.title;
-    //cell.lblTimestamp.text = [picture.timeStamp description];
-    NSDateFormatter *df = [[NSDateFormatter alloc] init];
-    [df setDateFormat:@"dd-MM-yyyy HH:mm:ss"];
-    cell.lblTimestamp.text = [df stringFromDate:picture.timeStamp];
-    
-    if(!picture.imageThumbnail) {
-        //Lazy load in background
-        dispatch_async(dispatch_get_global_queue(0,0), ^{
-            NSData * data = [[NSData alloc] initWithContentsOfURL: [NSURL URLWithString: picture.thumbnailURL]];
-            if ( data == nil )
-                return;
-            dispatch_async(dispatch_get_main_queue(), ^{
-                // WARNING: is the cell still using the same data by this point??
-                cell.ivThumbnail.image = [UIImage imageWithData: data];
-                picture.imageThumbnail = data;
-                [[AppDelegate sharedAppDelegate] saveContext];
-            });
-            
-        });
-    } else {
-        cell.ivThumbnail.image = [UIImage imageWithData:picture.imageThumbnail];
-    }
-    
-   
-    
-    DLog(@"AlbumID %@",picture.albumId);
+- (void)configureCell:(UITableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
+    NSManagedObject *object = [self.fetchedResultsController objectAtIndexPath:indexPath];
+    cell.textLabel.text = [[object valueForKey:@"timeStamp"] description];
 }
 
 #pragma mark - Fetched results controller
@@ -155,11 +119,8 @@
     
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     // Edit the entity name as appropriate.
-    NSEntityDescription *entity = [NSEntityDescription entityForName:CDE_PICTURE inManagedObjectContext:self.managedObjectContext];
+    NSEntityDescription *entity = [NSEntityDescription entityForName:@"Event" inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
-    
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"ANY albums.userId == 1"]; //This will be variable!! STUB
-    [fetchRequest setPredicate:predicate];
     
     // Set the batch size to a suitable number.
     [fetchRequest setFetchBatchSize:20];
@@ -171,7 +132,7 @@
     
     // Edit the section name key path and cache name if appropriate.
     // nil for section name key path means "no sections".
-    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:nil];
+    NSFetchedResultsController *aFetchedResultsController = [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest managedObjectContext:self.managedObjectContext sectionNameKeyPath:nil cacheName:@"Master"];
     aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
     
